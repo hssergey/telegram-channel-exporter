@@ -1,6 +1,9 @@
 import settings
 from telethon.client.telegramclient import TelegramClient
 from telethon import events
+import os
+import traceback
+import datetime
 
 client = None
 
@@ -13,8 +16,21 @@ else:
 @client.on(events.NewMessage(incoming=True))
 async def handle_new_mesage(event):
 	chat = await event.get_input_chat()
-	print("from: %s" % chat.channel_id)
-	print(event.text)
+	try:
+		channel_id = chat.channel_id
+# 		print("from: %s" % channel_id)
+# 		print(event.text)
+		if channel_id:
+			channel_folder = "%s/%s" % (settings.channels_folder, channel_id)
+			if not os.path.isdir(channel_folder):
+				os.mkdir(channel_folder)
+			timestamp = datetime.datetime.now().strftime('%s')
+			file = open("%s/%s.txt" % (channel_folder, timestamp), "w")
+			file.write(event.text)
+			file.close()
+	except Exception as ex:
+		traceback.print_exc()
+		
 	
 
 print("Telegram Channel Exporter is running")

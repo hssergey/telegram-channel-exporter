@@ -10,3 +10,5 @@ settings.py
 venv
 __pycache__
 .session
+channels
+/telegramChannelExporter.session
