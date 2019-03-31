@@ -12,3 +12,9 @@ proxy_data = (socks.SOCKS5, 'proxy_host', proxy_port, True, 'proxy_login', 'prox
 
 #folder to store channels messages
 channels_folder = "channels"
+
+#folder to store media
+media_folder = "media/"
+
+#start of url to show mediafiles
+url_start = "http://fido.ortoped.org.ru/"

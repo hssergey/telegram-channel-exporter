@@ -18,8 +18,8 @@ async def handle_new_mesage(event):
 	chat = await event.get_input_chat()
 	try:
 		channel_id = chat.channel_id
-# 		print("from: %s" % channel_id)
-# 		print(event.text)
+		print("from: %s" % channel_id)
+		print(event.text)
 		if channel_id:
 			channel_folder = "%s/%s" % (settings.channels_folder, channel_id)
 			if not os.path.isdir(channel_folder):
@@ -27,7 +27,20 @@ async def handle_new_mesage(event):
 			timestamp = datetime.datetime.now().strftime('%s')
 			file = open("%s/%s.txt" % (channel_folder, timestamp), "w")
 			file.write(event.text)
+			if event.photo:
+				filename = await client.download_media(event.photo, file = settings.media_folder)
+				basename = os.path.basename(filename)
+				url = "%s%s" % (settings.url_start, basename)
+				file.write("\n")
+				file.write(url)
+			if event.media:
+				filename = await client.download_media(event.media, file = settings.media_folder)
+				basename = os.path.basename(filename)
+				url = "%s%s" % (settings.url_start, basename)
+				file.write("\n")
+				file.write(url)
 			file.close()
+				
 	except Exception as ex:
 		traceback.print_exc()
 		
