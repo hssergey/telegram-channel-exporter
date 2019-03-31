@@ -27,12 +27,12 @@ async def handle_new_mesage(event):
 			timestamp = datetime.datetime.now().strftime('%s')
 			file = open("%s/%s.txt" % (channel_folder, timestamp), "w")
 			file.write(event.text)
-			if event.photo:
-				filename = await client.download_media(event.photo, file = settings.media_folder)
-				basename = os.path.basename(filename)
-				url = "%s%s" % (settings.url_start, basename)
-				file.write("\n")
-				file.write(url)
+# 			if event.photo:
+# 				filename = await client.download_media(event.photo, file = settings.media_folder)
+# 				basename = os.path.basename(filename)
+# 				url = "%s%s" % (settings.url_start, basename)
+# 				file.write("\n")
+# 				file.write(url)
 			if event.media:
 				filename = await client.download_media(event.media, file = settings.media_folder)
 				basename = os.path.basename(filename)
