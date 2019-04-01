@@ -10,7 +10,7 @@ from re import RegexFlag
 
 client = None
 
-pattern = re.compile('[^\d\w\s,\-\+=\<\>\.!\?\*;\%@\&\(\)\[\]\'\"\$:\\\/\#]', RegexFlag.IGNORECASE)
+pattern = re.compile('[^\d\w\s,_\-\+=\<\>\.!\?\*;\%@\&\(\)\[\]\'\"\$:\\\/\#]', RegexFlag.IGNORECASE)
 
 if settings.use_proxy:
 	client = TelegramClient('telegramChannelExporter', settings.api_id, settings.api_hash, proxy = settings.proxy_data).start()
