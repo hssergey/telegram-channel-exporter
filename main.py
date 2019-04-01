@@ -4,6 +4,7 @@ from telethon import events
 import os
 import traceback
 import datetime
+import urllib.parse
 
 client = None
 
@@ -34,11 +35,14 @@ async def handle_new_mesage(event):
 # 				file.write("\n")
 # 				file.write(url)
 			if event.media:
-				filename = await client.download_media(event.media, file = settings.media_folder)
-				basename = os.path.basename(filename)
-				url = "%s%s" % (settings.url_start, basename)
-				file.write("\n")
-				file.write(url)
+				try:
+					filename = await client.download_media(event.media, file = settings.media_folder)
+					basename = urllib.parse.quote(os.path.basename(filename))
+					url = "%s%s" % (settings.url_start, basename)
+					file.write("\n")
+					file.write(url)
+				except Exception as ex:
+					traceback.print_exc()				
 			file.close()
 				
 	except Exception as ex:
