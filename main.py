@@ -5,8 +5,12 @@ import os
 import traceback
 import datetime
 import urllib.parse
+import re
+from re import RegexFlag
 
 client = None
+
+pattern = re.compile('[^\d\w\s,\-\+=\<\>\.!\?\*;\%@\&\(\)\[\]\'\"\$:\\\/\#]', RegexFlag.IGNORECASE)
 
 if settings.use_proxy:
 	client = TelegramClient('telegramChannelExporter', settings.api_id, settings.api_hash, proxy = settings.proxy_data).start()
@@ -27,7 +31,11 @@ async def handle_new_mesage(event):
 				os.mkdir(channel_folder)
 			timestamp = datetime.datetime.now().strftime('%s')
 			file = open("%s/%s.txt" % (channel_folder, timestamp), "w")
-			file.write(event.text)
+			text = event.text
+			text = text.replace("«", "\"")
+			text = text.replace("»", "\"")
+			text = pattern.sub('', text)
+			file.write(text)
 # 			if event.photo:
 # 				filename = await client.download_media(event.photo, file = settings.media_folder)
 # 				basename = os.path.basename(filename)
