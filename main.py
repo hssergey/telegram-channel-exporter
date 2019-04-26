@@ -7,6 +7,8 @@ import datetime
 import urllib.parse
 import re
 from re import RegexFlag
+import json
+import random
 
 client = None
 
@@ -29,28 +31,25 @@ async def handle_new_mesage(event):
 			channel_folder = "%s/%s" % (settings.channels_folder, channel_id)
 			if not os.path.isdir(channel_folder):
 				os.mkdir(channel_folder)
-			timestamp = datetime.datetime.now().strftime('%s')
-			file = open("%s/%s.txt" % (channel_folder, timestamp), "w")
+			messages = []
 			text = event.text
 			text = text.replace("«", "\"")
 			text = text.replace("»", "\"")
 			text = pattern.sub('', text)
-			file.write(text)
-# 			if event.photo:
-# 				filename = await client.download_media(event.photo, file = settings.media_folder)
-# 				basename = os.path.basename(filename)
-# 				url = "%s%s" % (settings.url_start, basename)
-# 				file.write("\n")
-# 				file.write(url)
+			messages.append(text)
 			if event.media:
 				try:
 					filename = await client.download_media(event.media, file = settings.media_folder)
 					basename = urllib.parse.quote(os.path.basename(filename))
 					url = "%s%s" % (settings.url_start, basename)
-					file.write("\n")
-					file.write(url)
+					messages.append("\n")
+					messages.append(url)
 				except Exception as ex:
 					traceback.print_exc()				
+			timestamp = datetime.datetime.now().strftime('%s')
+			file = open("%s/%s-%s.txt" % (channel_folder, timestamp, random.randint(100000, 999999)), "w")
+			for message in messages:
+				file.write(message)
 			file.close()
 				
 	except Exception as ex:
