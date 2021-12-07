@@ -20,7 +20,7 @@ else:
 	client = TelegramClient('telegramChannelExporter', settings.api_id, settings.api_hash).start()
 
 
-@client.on(events.NewMessage(incoming=True))
+@client.on(events.NewMessage)
 async def handle_new_mesage(event):
 	chat = await event.get_input_chat()
 	try:

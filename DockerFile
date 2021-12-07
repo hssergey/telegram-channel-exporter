@@ -1,0 +1,15 @@
+FROM python:3.10.0-buster
+
+# Below args must match host system parameters
+# to produce static and media files with necessary flags
+
+RUN groupadd --gid 1000 fido && useradd -r -d /app -s /bin/bash -g fido -u 1000 fido
+WORKDIR /app
+
+COPY ./telegram-channel-exporter/requirements.txt /requirements.txt
+RUN pip install --upgrade pip
+RUN pip install -r /requirements.txt
+
+USER fido
+WORKDIR /app
+CMD ["./start.sh"]
