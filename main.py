@@ -9,6 +9,7 @@ import re
 from re import RegexFlag
 import json
 import random
+from telethon.utils import get_peer_id
 
 client = None
 
@@ -24,8 +25,26 @@ else:
 async def handle_new_mesage(event):
 	chat = await event.get_input_chat()
 	try:
-		channel_id = chat.channel_id
-		print("from: %s" % channel_id)
+		try:
+			channel_id = chat.channel_id
+		except Exception:
+			channel_id = get_peer_id(chat)
+		msg_from = None
+		# Check if the message is a forwarded message
+		if event.message.fwd_from:
+			fwd = event.message.fwd_from
+			# Check if the forward header contains a from_id reference
+			if fwd.from_id:
+				# Retrieve the entity for the original sender (if it was a channel, this is a PeerChannel)
+				original_entity = await client.get_entity(fwd.from_id)
+				# Many channel entities have a title attribute
+				if hasattr(original_entity, 'title'):
+					msg_from = original_entity.title
+				else:
+					# Fallback: sometimes the fwd_from header contains a from_name attribute
+					if fwd.from_name:
+						msg_from = fwd.from_name
+		print(f'from: {channel_id}, {msg_from}')
 		print(event.text)
 		if channel_id:
 			channel_folder = "%s/%s" % (settings.channels_folder, channel_id)
@@ -33,6 +52,8 @@ async def handle_new_mesage(event):
 				os.mkdir(channel_folder)
 			messages = []
 			text = event.text
+			if msg_from:
+				text = f'{text}\n\nForwarded from: {msg_from}'
 			text = text.replace("«", "\"")
 			text = text.replace("»", "\"")
 			text = pattern.sub('', text)
