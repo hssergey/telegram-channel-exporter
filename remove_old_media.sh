@@ -1,3 +1,3 @@
 #!/bin/sh
-cd /var/www/fido.ortoped.org.ru
-/usr/bin/find . -mtime +15 -type f -delete
+cd /home/sergey/programs/fido/www
+/usr/bin/find . -mtime +7 -type f -delete
